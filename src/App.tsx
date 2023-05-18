@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useState } from "react";
+import Board from "./components/Board";
 
 function App() {
-  return <div>hello world</div>
+  return (
+    <main>
+      <Board />
+    </main>
+  );
 }
 
-export default App
+export default App;
