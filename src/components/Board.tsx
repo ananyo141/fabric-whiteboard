@@ -1,9 +1,7 @@
 import React from "react";
 import { fabric } from "fabric";
 
-type Props = {};
-
-const Board = (props: Props) => {
+const Board = () => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const canvasBg = React.useRef<string>("#F9F0F0");
   const [penWidth, setPenWidth] = React.useState(3);
