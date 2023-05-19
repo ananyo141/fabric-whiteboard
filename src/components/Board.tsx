@@ -7,6 +7,7 @@ const Board = () => {
   const [penWidth, setPenWidth] = React.useState(3);
   const [penColor, setPenColor] = React.useState("#000000");
   const [fabricCanvas, setFabricCanvas] = React.useState<fabric.Canvas>();
+  const [isDrawing, setIsDrawing] = React.useState(true);
   const [eraserMode, setEraserMode] = React.useState(false);
 
   React.useEffect(() => {
@@ -93,6 +94,85 @@ const Board = () => {
     input.click();
   };
 
+  const drawCircle = () => {
+    if (!fabricCanvas) return;
+    const circle = new fabric.Circle({
+      radius: 50,
+      stroke: penColor,
+      strokeWidth: 1,
+      fill: "transparent",
+      left: 100,
+      top: 100,
+    });
+    fabricCanvas.add(circle);
+  };
+
+  const drawArrow = () => {
+    if (!fabricCanvas) return;
+    // Create a line
+    var line = new fabric.Line([50, 50, 200, 50], {
+      strokeWidth: 2,
+      stroke: penColor,
+    });
+
+    // Create an arrow head
+    var arrowHead = new fabric.Triangle({
+      width: 10,
+      height: 10,
+      fill: penColor,
+      angle: -27,
+      top: 47,
+      left: 190,
+    });
+
+    // Group the line and arrow head together
+    var group = new fabric.Group([line, arrowHead]);
+
+    // Add the group to the canvas
+    fabricCanvas.add(group);
+  };
+
+  const drawRect = () => {
+    if (!fabricCanvas) return;
+    const rect = new fabric.Rect({
+      width: 90,
+      height: 80,
+      stroke: penColor,
+      strokeWidth: 1,
+      fill: "transparent",
+      left: 50,
+      top: 50,
+    });
+    fabricCanvas.add(rect);
+  };
+
+  const addText = () => {
+    if (!fabricCanvas) return;
+    const text = new fabric.IText("Hello World", {
+      fill: penColor,
+      left: 50,
+      top: 50,
+    });
+    fabricCanvas.add(text);
+  };
+
+  const addImage = () => {
+    if (!fabricCanvas) return;
+    const img = new Image();
+    img.onload = () => {
+      const image = new fabric.Image(img);
+      fabricCanvas.add(image);
+    };
+
+    img.src = "https://picsum.photos/200/300";
+  };
+
+  const toggleDrawingMode = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
+    setIsDrawing(fabricCanvas.isDrawingMode);
+  };
+
   return (
     <div className="flex flex-col container mx-auto justify-center items-center gap-3 mt-3 h-full">
       <div className="flex max-w-[1280px] items-center relative justify-center w-full">
@@ -156,7 +236,51 @@ const Board = () => {
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             onClick={toggleEraser}
           >
-            {eraserMode ? "Erasing Mode" : "Drawing Mode"}
+            {eraserMode ? "Disable Eraser" : "Enable Eraser"}
+          </button>
+        </div>
+        <div className="space-x-3 mt-2">
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={drawCircle}
+          >
+            Draw Circle
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={drawRect}
+          >
+            Draw Rectangle
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={addText}
+          >
+            Add Text
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={addImage}
+          >
+            Add Image
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={drawArrow}
+          >
+            Arrow
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={toggleDrawingMode}
+          >
+            {isDrawing ? "Drawing" : "Enable Drawing"}
           </button>
         </div>
       </div>
