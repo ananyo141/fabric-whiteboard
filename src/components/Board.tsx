@@ -39,7 +39,6 @@ const Board = () => {
 
   const downloadBoard = () => {
     if (!fabricCanvas) return;
-
     const pngData = fabricCanvas.toDataURL({
       format: "png",
       quality: 0.8,
@@ -63,9 +62,58 @@ const Board = () => {
     setEraserMode(!eraserMode);
   };
 
+  const exportBoard = () => {
+    if (!fabricCanvas) return;
+    const json = JSON.stringify(fabricCanvas.toDatalessJSON());
+    const link = document.createElement("a");
+    link.download = `fabric-board-${new Date().getTime()}.json`;
+    link.href = `data:text/json;charset=utf-8,${encodeURIComponent(json)}`;
+    link.click();
+  };
+
+  const loadBoard = () => {
+    if (!fabricCanvas) return;
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      if (!e.target) return;
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (!event.target) return;
+        const contents = event.target.result;
+        fabricCanvas.loadFromJSON(contents, () => {
+          fabricCanvas.renderAll();
+        });
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
+
   return (
-    <div className="flex flex-col items-center gap-3 mt-3 w-full h-full">
-      <p className="text-3xl">Whiteboard</p>
+    <div className="flex flex-col container mx-auto justify-center items-center gap-3 mt-3 h-full">
+      <div className="flex max-w-[1280px] items-center relative justify-center w-full">
+        <p className="text-3xl">Whiteboard</p>
+        <div className="absolute space-x-3 right-0">
+          <button
+            type="button"
+            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={exportBoard}
+          >
+            Export
+          </button>
+          <button
+            type="button"
+            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={loadBoard}
+          >
+            Load
+          </button>
+        </div>
+      </div>
       <canvas ref={canvasRef}></canvas>
       <div>
         <div>
