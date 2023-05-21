@@ -11,7 +11,6 @@ const Board = () => {
   const [eraserMode, setEraserMode] = React.useState(false);
 
   const canvasHistory = React.useRef<any>([]);
-  const shouldSave = React.useRef<boolean>(true);
   const [canvasHistoryIndex, setCanvasHistoryIndex] =
     React.useState<number>(-1);
 
@@ -22,12 +21,6 @@ const Board = () => {
       backgroundColor: canvasBg.current,
       isDrawingMode: true,
     });
-    if (canvasHistoryIndex === -1) {
-      canvas.loadFromJSON(canvasHistory.current[canvasHistoryIndex + 1], () => {
-        canvas.renderAll();
-      });
-    }
-
     setFabricCanvas(canvas);
 
     return () => {
@@ -43,11 +36,6 @@ const Board = () => {
 
   const saveCanvasState = () => {
     if (!fabricCanvas) return;
-    console.log(shouldSave.current);
-    if (!shouldSave.current) {
-      shouldSave.current = true;
-      return;
-    }
     console.log("saving");
     const state = fabricCanvas.toDatalessObject();
     const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
@@ -81,7 +69,6 @@ const Board = () => {
   const handleUndo = () => {
     console.log(canvasHistory);
     if (!fabricCanvas) return;
-    shouldSave.current = false;
     if (canvasHistoryIndex > 0) {
       setCanvasHistoryIndex(canvasHistoryIndex - 1);
       const state = canvasHistory.current[canvasHistoryIndex - 1];
@@ -95,7 +82,6 @@ const Board = () => {
 
   const handleRedo = () => {
     if (!fabricCanvas) return;
-    shouldSave.current = false;
     if (canvasHistoryIndex < canvasHistory.current.length - 1) {
       setCanvasHistoryIndex(canvasHistoryIndex + 1);
       const state = canvasHistory.current[canvasHistoryIndex + 1];
