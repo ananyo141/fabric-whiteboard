@@ -37,21 +37,10 @@ const Board = () => {
   const saveCanvasState = () => {
     if (!fabricCanvas) return;
     const state = fabricCanvas.toDatalessObject();
-    const shouldWrap = canvasHistoryIndex - 10 > 0;
-    if (shouldWrap) {
-      const newObjects = canvasHistory.current.slice(
-        canvasHistoryIndex - 10,
-        canvasHistoryIndex + 1
-      );
-      newObjects.push(state);
-      canvasHistory.current = newObjects;
-      // setCanvasHistoryIndex(10);
-    } else {
-      const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
-      newObjects.push(state);
-      canvasHistory.current = newObjects;
-      setCanvasHistoryIndex(canvasHistoryIndex + 1);
-    }
+    const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
+    newObjects.push(state);
+    canvasHistory.current = newObjects;
+    setCanvasHistoryIndex(canvasHistoryIndex + 1);
   };
 
   const enableEventListeners = () => {
@@ -86,6 +75,11 @@ const Board = () => {
         fabricCanvas.renderAll();
       });
       enableEventListeners();
+    } else {
+      disableEventListeners();
+      clearBoard();
+      enableEventListeners();
+      setCanvasHistoryIndex(-1);
     }
   };
 
