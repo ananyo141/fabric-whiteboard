@@ -10,6 +10,10 @@ const Board = () => {
   const [isDrawing, setIsDrawing] = React.useState(true);
   const [eraserMode, setEraserMode] = React.useState(false);
 
+  const canvasHistory = React.useRef<any>([]);
+  const [canvasHistoryIndex, setCanvasHistoryIndex] =
+    React.useState<number>(-1);
+
   React.useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current as HTMLCanvasElement, {
       width: 1280,
@@ -23,6 +27,80 @@ const Board = () => {
       canvas.dispose();
     };
   }, [canvasRef]);
+
+  React.useEffect(() => {
+    if (!fabricCanvas) return;
+    enableEventListeners();
+    return () => disableEventListeners();
+  }, [fabricCanvas, canvasHistory.current, canvasHistoryIndex]);
+
+  const saveCanvasState = () => {
+    if (!fabricCanvas) return;
+    const state = fabricCanvas.toDatalessObject();
+    const shouldWrap = canvasHistoryIndex - 10 > 0;
+    if (shouldWrap) {
+      const newObjects = canvasHistory.current.slice(
+        canvasHistoryIndex - 10,
+        canvasHistoryIndex + 1
+      );
+      newObjects.push(state);
+      canvasHistory.current = newObjects;
+      // setCanvasHistoryIndex(10);
+    } else {
+      const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
+      newObjects.push(state);
+      canvasHistory.current = newObjects;
+      setCanvasHistoryIndex(canvasHistoryIndex + 1);
+    }
+  };
+
+  const enableEventListeners = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.on("object:added", saveCanvasState);
+    fabricCanvas.on("object:modified", saveCanvasState);
+    fabricCanvas.on("object:removed", saveCanvasState);
+  };
+
+  const disableEventListeners = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.off("object:added", saveCanvasState);
+    fabricCanvas.off("object:modified", saveCanvasState);
+    fabricCanvas.off("object:removed", saveCanvasState);
+  };
+
+  const deleteSelected = () => {
+    if (!fabricCanvas) return;
+    const activeObject = fabricCanvas.getActiveObject();
+    if (activeObject) {
+      fabricCanvas.remove(activeObject);
+    }
+  };
+
+  const handleUndo = () => {
+    if (!fabricCanvas) return;
+    if (canvasHistoryIndex > 0) {
+      const state = canvasHistory.current[canvasHistoryIndex - 1];
+      setCanvasHistoryIndex(canvasHistoryIndex - 1);
+      disableEventListeners();
+      fabricCanvas.loadFromJSON(state, () => {
+        fabricCanvas.renderAll();
+      });
+      enableEventListeners();
+    }
+  };
+
+  const handleRedo = () => {
+    if (!fabricCanvas) return;
+    if (canvasHistoryIndex < canvasHistory.current.length - 1) {
+      const state = canvasHistory.current[canvasHistoryIndex + 1];
+      setCanvasHistoryIndex(canvasHistoryIndex + 1);
+      disableEventListeners();
+      fabricCanvas.loadFromJSON(state, () => {
+        fabricCanvas.renderAll();
+      });
+      enableEventListeners();
+    }
+  };
 
   const changePenWidth = (width: number) => {
     if (!fabricCanvas) return;
@@ -281,6 +359,27 @@ const Board = () => {
             onClick={toggleDrawingMode}
           >
             {isDrawing ? "Drawing" : "Enable Drawing"}
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={deleteSelected}
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleUndo}
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleRedo}
+          >
+            Redo
           </button>
         </div>
       </div>
