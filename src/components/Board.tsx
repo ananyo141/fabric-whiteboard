@@ -1,6 +1,21 @@
 import React from "react";
 import { fabric } from "fabric";
 
+// icon imports
+import exportIcon from "../assets/export.png";
+import importIcon from "../assets/import.png";
+import undoIcon from "../assets/undo.png";
+import redoIcon from "../assets/redo.png";
+import penIcon from "../assets/pen.png";
+import eraserIcon from "../assets/eraser.png";
+import trashIcon from "../assets/trash.png";
+import selectIcon from "../assets/select.png";
+import downloadIcon from "../assets/download.png";
+import circleIcon from "../assets/circleC.png";
+import rectangleIcon from "../assets/rectangleC.png";
+import textIcon from "../assets/textC.png";
+import arrowIcon from "../assets/arrowC.png";
+
 const Board = () => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const canvasBg = React.useRef<string>("#F9F0F0");
@@ -8,7 +23,6 @@ const Board = () => {
   const [penColor, setPenColor] = React.useState("#000000");
   const [fabricCanvas, setFabricCanvas] = React.useState<fabric.Canvas>();
   const [isDrawing, setIsDrawing] = React.useState(true);
-  const [eraserMode, setEraserMode] = React.useState(false);
 
   const canvasHistory = React.useRef<any>([]);
   const [canvasHistoryIndex, setCanvasHistoryIndex] =
@@ -59,9 +73,9 @@ const Board = () => {
 
   const deleteSelected = () => {
     if (!fabricCanvas) return;
-    const activeObject = fabricCanvas.getActiveObject();
+    const activeObject = fabricCanvas.getActiveObjects();
     if (activeObject) {
-      fabricCanvas.remove(activeObject);
+      fabricCanvas.remove(...activeObject);
     }
   };
 
@@ -127,12 +141,6 @@ const Board = () => {
     if (!fabricCanvas) return;
     fabricCanvas.clear();
     fabricCanvas.backgroundColor = canvasBg.current;
-  };
-
-  const toggleEraser = () => {
-    if (!fabricCanvas) return;
-    changePenColor(eraserMode ? "#000000" : canvasBg.current);
-    setEraserMode(!eraserMode);
   };
 
   const exportBoard = () => {
@@ -228,17 +236,6 @@ const Board = () => {
     fabricCanvas.add(text);
   };
 
-  const addImage = () => {
-    if (!fabricCanvas) return;
-    const img = new Image();
-    img.onload = () => {
-      const image = new fabric.Image(img);
-      fabricCanvas.add(image);
-    };
-
-    img.src = "https://picsum.photos/200/300";
-  };
-
   const toggleDrawingMode = () => {
     if (!fabricCanvas) return;
     fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
@@ -249,22 +246,55 @@ const Board = () => {
     <div className="flex flex-col container mx-auto justify-center items-center gap-3 mt-3 h-full">
       <div className="flex max-w-[1280px] items-center relative justify-center w-full">
         <p className="text-3xl">Whiteboard</p>
-        <div className="absolute space-x-3 right-0">
-          <button
-            type="button"
-            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={exportBoard}
-          >
+        <div className="absolute mt-8 space-x-4 right-0">
+          <button className="inline-block py-2 rounded" onClick={exportBoard}>
+            <img src={exportIcon} alt="download" className="w-5 h-5" />
             Export
           </button>
-          <button
-            type="button"
-            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={loadBoard}
-          >
-            Load
+          <button className="inline-block py-2 rounded" onClick={loadBoard}>
+            <img src={importIcon} alt="load" className="w-5 h-5" />
+            Import
+          </button>
+          <button className="inline-block py-2 rounded" onClick={downloadBoard}>
+            <img src={downloadIcon} alt="download" className="w-5 h-5" />
+            Download
           </button>
         </div>
+      </div>
+      <div>
+        <button
+          className="inline-block py-2 px-4 rounded"
+          onClick={handleUndo}
+          disabled={canvasHistoryIndex < 0}
+        >
+          <img src={undoIcon} alt="undo" className="w-5 h-5" />
+        </button>
+        <button
+          className="inline-block py-2 px-4 rounded"
+          onClick={handleRedo}
+          disabled={canvasHistoryIndex === canvasHistory.current.length - 1}
+        >
+          <img src={redoIcon} alt="redo" className="w-5 h-5" />
+        </button>
+        <button className="inline-block py-2 px-4 rounded" onClick={clearBoard}>
+          <img src={trashIcon} alt="clear" className="w-5 h-5" />
+        </button>
+        <button
+          className="inline-block py-2 px-4 rounded"
+          onClick={deleteSelected}
+        >
+          <img src={eraserIcon} alt="erase" className="w-5 h-5" />
+        </button>
+        <button
+          className="inline-block py-2 px-4 rounded"
+          onClick={toggleDrawingMode}
+        >
+          <img
+            src={isDrawing ? penIcon : selectIcon}
+            alt="pen"
+            className="w-5 h-5"
+          />
+        </button>
       </div>
       <canvas ref={canvasRef}></canvas>
       <div>
@@ -286,95 +316,35 @@ const Board = () => {
             onChange={(e) => changePenColor(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 mt-2">
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={downloadBoard}
-          >
-            Download
-          </button>
-
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={clearBoard}
-          >
-            Clear
-          </button>
-
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={toggleEraser}
-          >
-            {eraserMode ? "Disable Eraser" : "Enable Eraser"}
-          </button>
-        </div>
-        <div className="space-x-3 mt-2">
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+        <div className="flex gap-2 mt-2"></div>
+      </div>
+      {/* Circle, Rectabnel, Text, Arrow*/}
+      <div className="rounded-full w-1/2 bg-gray-100 shadow-md">
+        <div className="flex justify-center gap-9 items-center h-12">
+          <img
+            src={circleIcon}
+            alt="circle"
+            className="cursor-pointer rounded w-9 h-9"
             onClick={drawCircle}
-          >
-            Draw Circle
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+          />
+          <img
+            src={rectangleIcon}
+            alt="rectangle"
+            className="cursor-pointer rounded w-9 h-9"
             onClick={drawRect}
-          >
-            Draw Rectangle
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+          />
+          <img
+            src={textIcon}
+            alt="text"
+            className="cursor-pointer rounded w-9 h-9"
             onClick={addText}
-          >
-            Add Text
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={addImage}
-          >
-            Add Image
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+          />
+          <img
+            src={arrowIcon}
+            alt="arrow"
+            className="cursor-pointer rounded w-9 h-9"
             onClick={drawArrow}
-          >
-            Arrow
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={toggleDrawingMode}
-          >
-            {isDrawing ? "Drawing" : "Enable Drawing"}
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={deleteSelected}
-          >
-            Delete
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleUndo}
-          >
-            Undo
-          </button>
-          <button
-            type="button"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleRedo}
-          >
-            Redo
-          </button>
+          />
         </div>
       </div>
     </div>
