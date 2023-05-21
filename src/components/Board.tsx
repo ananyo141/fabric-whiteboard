@@ -182,13 +182,13 @@ const Board = () => {
   const drawArrow = () => {
     if (!fabricCanvas) return;
     // Create a line
-    var line = new fabric.Line([50, 50, 200, 50], {
+    const line = new fabric.Line([50, 50, 200, 50], {
       strokeWidth: 2,
       stroke: penColor,
     });
 
     // Create an arrow head
-    var arrowHead = new fabric.Triangle({
+    const arrowHead = new fabric.Triangle({
       width: 10,
       height: 10,
       fill: penColor,
@@ -198,7 +198,7 @@ const Board = () => {
     });
 
     // Group the line and arrow head together
-    var group = new fabric.Group([line, arrowHead]);
+    const group = new fabric.Group([line, arrowHead]);
 
     // Add the group to the canvas
     fabricCanvas.add(group);
