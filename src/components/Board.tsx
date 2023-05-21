@@ -248,7 +248,7 @@ const Board = () => {
         <p className="text-3xl">Whiteboard</p>
         <div className="absolute mt-8 space-x-4 right-0">
           <button className="inline-block py-2 rounded" onClick={exportBoard}>
-            <img src={exportIcon} alt="download" className="w-5 h-5" />
+            <img src={exportIcon} alt="export" className="w-5 h-5" />
             Export
           </button>
           <button className="inline-block py-2 rounded" onClick={loadBoard}>
@@ -257,7 +257,7 @@ const Board = () => {
           </button>
           <button className="inline-block py-2 rounded" onClick={downloadBoard}>
             <img src={downloadIcon} alt="download" className="w-5 h-5" />
-            Download
+            Save
           </button>
         </div>
       </div>
