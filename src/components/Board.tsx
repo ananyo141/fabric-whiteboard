@@ -77,6 +77,11 @@ const Board = () => {
         fabricCanvas.renderAll();
       });
       enableEventListeners();
+    } else {
+      disableEventListeners();
+      clearBoard();
+      enableEventListeners();
+      setCanvasHistoryIndex(-1);
     }
   };
 
