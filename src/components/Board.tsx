@@ -299,7 +299,7 @@ const Board = () => {
       <canvas ref={canvasRef}></canvas>
       <div>
         <div>
-          <label>Pen Width - {penWidth}</label>
+          <label>Brush Width - {penWidth}</label>
           <input
             type="range"
             min={1}
@@ -309,7 +309,7 @@ const Board = () => {
           />
         </div>
         <div>
-          <label>Pen Color - {penColor}</label>
+          <label>Brush Color - {penColor}</label>
           <input
             type="color"
             value={penColor}
@@ -319,8 +319,38 @@ const Board = () => {
         <div className="flex gap-2 mt-2"></div>
       </div>
       {/* Circle, Rectabnel, Text, Arrow*/}
-      <div className="rounded-full w-1/2 bg-gray-100 shadow-md">
+      {/* Horizontal */}
+      <div className="rounded-full hidden lg:block w-1/2 bg-gray-100 shadow-md">
         <div className="flex justify-center gap-9 items-center h-12">
+          <img
+            src={circleIcon}
+            alt="circle"
+            className="cursor-pointer rounded w-9 h-9"
+            onClick={drawCircle}
+          />
+          <img
+            src={rectangleIcon}
+            alt="rectangle"
+            className="cursor-pointer rounded w-9 h-9"
+            onClick={drawRect}
+          />
+          <img
+            src={textIcon}
+            alt="text"
+            className="cursor-pointer rounded w-9 h-9"
+            onClick={addText}
+          />
+          <img
+            src={arrowIcon}
+            alt="arrow"
+            className="cursor-pointer rounded w-9 h-9"
+            onClick={drawArrow}
+          />
+        </div>
+      </div>
+      {/* Vertical */}
+      <div className="absolute border lg:hidden right-4 rounded-full h-1/2 bg-gray-100 shadow-md">
+        <div className="flex flex-col px-1 h-full justify-center gap-9 items-center">
           <img
             src={circleIcon}
             alt="circle"
