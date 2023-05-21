@@ -36,12 +36,22 @@ const Board = () => {
 
   const saveCanvasState = () => {
     if (!fabricCanvas) return;
-    console.log("saving");
     const state = fabricCanvas.toDatalessObject();
-    const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
-    newObjects.push(state);
-    canvasHistory.current = newObjects;
-    setCanvasHistoryIndex(canvasHistoryIndex + 1);
+    const shouldWrap = canvasHistoryIndex - 10 > 0;
+    if (shouldWrap) {
+      const newObjects = canvasHistory.current.slice(
+        canvasHistoryIndex - 10,
+        canvasHistoryIndex + 1
+      );
+      newObjects.push(state);
+      canvasHistory.current = newObjects;
+      // setCanvasHistoryIndex(10);
+    } else {
+      const newObjects = canvasHistory.current.slice(0, canvasHistoryIndex + 1);
+      newObjects.push(state);
+      canvasHistory.current = newObjects;
+      setCanvasHistoryIndex(canvasHistoryIndex + 1);
+    }
   };
 
   const enableEventListeners = () => {
@@ -67,29 +77,23 @@ const Board = () => {
   };
 
   const handleUndo = () => {
-    console.log(canvasHistory);
     if (!fabricCanvas) return;
     if (canvasHistoryIndex > 0) {
-      setCanvasHistoryIndex(canvasHistoryIndex - 1);
       const state = canvasHistory.current[canvasHistoryIndex - 1];
+      setCanvasHistoryIndex(canvasHistoryIndex - 1);
       disableEventListeners();
       fabricCanvas.loadFromJSON(state, () => {
         fabricCanvas.renderAll();
       });
       enableEventListeners();
-    } else {
-      disableEventListeners();
-      clearBoard();
-      enableEventListeners();
-      setCanvasHistoryIndex(-1);
     }
   };
 
   const handleRedo = () => {
     if (!fabricCanvas) return;
     if (canvasHistoryIndex < canvasHistory.current.length - 1) {
-      setCanvasHistoryIndex(canvasHistoryIndex + 1);
       const state = canvasHistory.current[canvasHistoryIndex + 1];
+      setCanvasHistoryIndex(canvasHistoryIndex + 1);
       disableEventListeners();
       fabricCanvas.loadFromJSON(state, () => {
         fabricCanvas.renderAll();
