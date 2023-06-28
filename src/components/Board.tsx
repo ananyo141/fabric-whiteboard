@@ -11,15 +11,15 @@ import eraserIcon from "../assets/eraser.png";
 import trashIcon from "../assets/trash.png";
 import selectIcon from "../assets/select.png";
 import downloadIcon from "../assets/download.png";
-import circleIcon from "../assets/circleC.png";
-import rectangleIcon from "../assets/rectangleC.png";
-import textIcon from "../assets/textC.png";
-import arrowIcon from "../assets/arrowC.png";
+import circleIcon from "../assets/circle.png";
+import rectangleIcon from "../assets/rectangle.png";
+import textIcon from "../assets/text.png";
+import arrowIcon from "../assets/arrow.png";
 import widthIcon from "../assets/width.png";
 
 const Board = () => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const canvasBg = React.useRef<string>("#F9F0F0");
+  const canvasBg = React.useRef<string>("#ffffff");
   const [penWidth, setPenWidth] = React.useState(3);
   const [penColor, setPenColor] = React.useState("#000000");
   const [fabricCanvas, setFabricCanvas] = React.useState<fabric.Canvas>();
@@ -247,119 +247,61 @@ const Board = () => {
 
   return (
     <div className="flex flex-col container mx-auto justify-center items-center gap-3 mt-3 h-full">
-      <div className="flex max-w-[1280px] items-center relative justify-center w-full">
-        <p className="text-3xl">Whiteboard</p>
-        <div className="absolute mt-8 space-x-4 right-0">
-          <button className="inline-block py-2 rounded" onClick={exportBoard}>
-            <img src={exportIcon} alt="export" className="w-5 h-5" />
-            Export
-          </button>
-          <button className="inline-block py-2 rounded" onClick={loadBoard}>
-            <img src={importIcon} alt="load" className="w-5 h-5" />
-            Import
-          </button>
-          <button className="inline-block py-2 rounded" onClick={downloadBoard}>
-            <img src={downloadIcon} alt="download" className="w-5 h-5" />
-            Save
-          </button>
-        </div>
-      </div>
-      <div>
-        <button
-          className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
-          onClick={handleUndo}
-          disabled={canvasHistoryIndex < 0}
-        >
-          <img src={undoIcon} alt="undo" className="w-5 h-5" />
-        </button>
-        <button
-          className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
-          onClick={handleRedo}
-          disabled={canvasHistoryIndex === canvasHistory.current.length - 1}
-        >
-          <img src={redoIcon} alt="redo" className="w-5 h-5" />
-        </button>
-        <button
-          className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
-          onClick={clearBoard}
-        >
-          <img src={trashIcon} alt="clear" className="w-5 h-5" />
-        </button>
-        <button
-          className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
-          onClick={deleteSelected}
-        >
-          <img src={eraserIcon} alt="erase" className="w-5 h-5" />
-        </button>
-        <button
-          className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
-          onClick={toggleDrawingMode}
-        >
-          <img
-            src={isDrawing ? penIcon : selectIcon}
-            alt="pen"
-            className="w-5 h-5"
-          />
-        </button>
-      </div>
       <canvas ref={canvasRef}></canvas>
       {/* Circle, Rectabnel, Text, Arrow*/}
       {/* Horizontal */}
-      <div className="rounded-full absolute bottom-10 hidden lg:block w-1/2 bg-gray-100 shadow-md">
+      <div className="rounded-full absolute bottom-10 w-1/2 bg-gray-100 shadow-md">
         <div className="flex justify-center gap-9 items-center h-12">
-          <img
-            src={circleIcon}
-            alt="circle"
-            className="cursor-pointer hover:scale-125 duration-100 rounded w-9 h-9"
-            onClick={drawCircle}
-          />
-          <img
-            src={rectangleIcon}
-            alt="rectangle"
-            className="cursor-pointer hover:scale-125 duration-100 rounded w-9 h-9"
-            onClick={drawRect}
-          />
-          <img
-            src={textIcon}
-            alt="text"
-            className="cursor-pointer hover:scale-125 duration-100 rounded w-9 h-9"
-            onClick={addText}
-          />
-          <img
-            src={arrowIcon}
-            alt="arrow"
-            className="cursor-pointer hover:scale-125 duration-100 rounded w-9 h-9"
-            onClick={drawArrow}
-          />
-          <input
-            type="color"
-            value={penColor}
-            className="cursor-pointer hover:scale-125 duration-100 "
-            onChange={(e) => changePenColor(e.target.value)}
-          />
-          <div className="relative">
+          <button
+            className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
+            onClick={handleUndo}
+            disabled={canvasHistoryIndex < 0}
+          >
+            <img src={undoIcon} alt="undo" className="w-5 h-5" />
+          </button>
+          <button
+            className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
+            onClick={handleRedo}
+            disabled={canvasHistoryIndex === canvasHistory.current.length - 1}
+          >
+            <img src={redoIcon} alt="redo" className="w-5 h-5" />
+          </button>
+          <button
+            className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
+            onClick={clearBoard}
+          >
+            <img src={trashIcon} alt="clear" className="w-5 h-5" />
+          </button>
+          <button
+            className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
+            onClick={deleteSelected}
+          >
+            <img src={eraserIcon} alt="erase" className="w-5 h-5" />
+          </button>
+          <button
+            className="inline-block py-2 px-4 hover:scale-125 duration-75 rounded"
+            onClick={toggleDrawingMode}
+          >
             <img
-              src={widthIcon}
-              alt="width"
-              onClick={() => setWidthOpen(!widthOpen)}
-              className="w-9 h-9 cursor-pointer scale-75 hover:scale-105 duration-100 "
+              src={isDrawing ? penIcon : selectIcon}
+              alt="pen"
+              className="w-5 h-5"
             />
-            {widthOpen && (
-              <input
-                type="range"
-                min={1}
-                max={30}
-                className="absolute bottom-12 -left-9 cursor-ew-resize"
-                value={penWidth}
-                onChange={(e) => changePenWidth(parseInt(e.target.value))}
-              />
-            )}
-          </div>
+          </button>
+          <button className="inline-block py-2 rounded" onClick={exportBoard}>
+            <img src={exportIcon} alt="export" className="w-5 h-5" />
+          </button>
+          <button className="inline-block py-2 rounded" onClick={loadBoard}>
+            <img src={importIcon} alt="load" className="w-5 h-5" />
+          </button>
+          <button className="inline-block py-2 rounded" onClick={downloadBoard}>
+            <img src={downloadIcon} alt="download" className="w-5 h-5" />
+          </button>
         </div>
       </div>
       {/* Vertical */}
-      <div className="absolute border lg:hidden right-4 rounded-full h-fit py-5 bg-gray-100 shadow-md">
-        <div className="flex flex-col px-1 h-full justify-center gap-9 items-center">
+      <div className="overflow-clip fixed right-0 h-screen pt-8 mt-24 bg-gray-100 shadow-md">
+        <div className="flex flex-col px-1 gap-9 items-center">
           <img
             src={circleIcon}
             alt="circle"
@@ -387,7 +329,7 @@ const Board = () => {
           <input
             type="color"
             value={penColor}
-            className="cursor-pointer hover:scale-125 duration-100 "
+            className="cursor-pointer hover:scale-105 duration-100 "
             onChange={(e) => changePenColor(e.target.value)}
           />
           <div className="relative">
