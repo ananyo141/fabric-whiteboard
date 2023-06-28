@@ -1,0 +1,62 @@
+.vertical_bar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  padding-top: 2.5rem;
+  margin-top: 2.5rem;
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color),
+    0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.vertical_button_wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.25rem /* 4px */;
+  padding-right: 0.25rem /* 4px */;
+  gap: 2.25rem;
+  align-items: center;
+}
+
+.vertical_button_wrapper > img {
+  cursor: pointer;
+  border-radius: 0.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.vertical_button_wrapper > img:hover {
+  scale: 1.25;
+  transition-duration: 0.25s;
+}
+
+.width_button {
+  position: relative;
+}
+
+.width_button > img {
+  width: 2.25rem;
+  height: 2.25rem;
+  cursor: pointer;
+  scale: 0.75;
+}
+
+.width_button > img:hover {
+  scale: 1.05;
+  transition-duration: 0.25s;
+}
+
+.width_button > input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: ew-resize;
+}
+
+#width_slider {
+  bottom: 90;
+  right: 30;
+}

@@ -1,9 +1,9 @@
-import Board from "./components/Board";
+import Whiteboard from "./pages/Whiteboard";
 
 function App() {
   return (
     <main>
-      <Board />
+      <Whiteboard />
     </main>
   );
 }
